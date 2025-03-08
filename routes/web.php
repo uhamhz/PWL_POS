@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
+
 Route::get('/user/tambah', [App\Http\Controllers\UserController::class, 'tambah']);
 Route::post('/user/tambah_simpan', [App\Http\Controllers\UserController::class, 'tambah_simpan']);
 Route::get('/user/ubah/{id}', [App\Http\Controllers\UserController::class, 'ubah']);
