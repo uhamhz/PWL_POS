@@ -10,7 +10,6 @@ use Yajra\DataTables\Facades\DataTables;
 class UserController extends Controller
 {
    // Menampilkan halaman awal user
-   // Menampilkan halaman awal user
    public function index()
    {
       $breadcrumb = (object) [
@@ -49,8 +48,8 @@ class UserController extends Controller
          // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
          ->addIndexColumn()
          ->addColumn('aksi', function ($user) { // menambahkan kolom aksi
-            $btn = '<a href="' . url('/user/' . $user->user_id) . '" class="btn btn-info btnsm">Detail</a> ';
-            $btn .= '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btnwarning btn-sm">Edit</a> ';
+            $btn = '<a href="' . url('/user/' . $user->user_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+            $btn .= '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
             $btn .= '<form class="d-inline-block" method="POST" action="' .
                url('/user/' . $user->user_id) . '">'
                . csrf_field() . method_field('DELETE') .
