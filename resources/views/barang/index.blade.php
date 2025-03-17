@@ -6,6 +6,8 @@
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('barang/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -41,47 +43,52 @@
                 </thead>
             </table>
         </div>
-    </div>
+        <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+            data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
+    @push('css')
+    @endpush
+    @push('js')
+        <script>
+            function modalAction(url = '') {
+                $('#myModal').load(url, function () {
+                    $('#myModal').modal('show');
+                });
+            }
 
-@push('css')
-    <!-- Tambahkan CSS tambahan jika diperlukan -->
-@endpush
-
-@push('js')
-    <script>
-        $(document).ready(function () {
-            var dataBarang = $('#table_barang').DataTable({
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    url: "{{ url('barang/list') }}",
-                    type: "POST",
-                    dataType: "json",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            var dataBarang;
+            $(document).ready(function () {
+                dataBarang = $('#table_barang').DataTable({
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: "{{ url('barang/list') }}",
+                        type: "POST",
+                        dataType: "json",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: function (d) {
+                            d.kategori_id = $('#kategori_id').val(); // Mengirimkan filter kategori
+                        },
+                        error: function (xhr, error, thrown) {
+                            console.log("AJAX Error:", xhr.responseText);
+                        }
                     },
-                    data: function (d) {
-                        d.kategori_id = $('#kategori_id').val(); // Mengirimkan filter kategori
-                    },
-                    error: function (xhr, error, thrown) {
-                        console.log("AJAX Error:", xhr.responseText);
-                    }
-                },
-                columns: [
-                    { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
-                    { data: "barang_kode", orderable: true, searchable: true },
-                    { data: "barang_nama", orderable: true, searchable: true },
-                    { data: "kategori_nama", orderable: true, searchable: true },
-                    { data: "harga_beli", className: "text-right", orderable: true, searchable: true },
-                    { data: "harga_jual", className: "text-right", orderable: true, searchable: true },
-                    { data: "aksi", orderable: false, searchable: false }
-                ]
-            });
+                    columns: [
+                        { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
+                        { data: "barang_kode", orderable: true, searchable: true },
+                        { data: "barang_nama", orderable: true, searchable: true },
+                        { data: "kategori_nama", orderable: true, searchable: true },
+                        { data: "harga_beli", className: "text-right", orderable: true, searchable: true },
+                        { data: "harga_jual", className: "text-right", orderable: true, searchable: true },
+                        { data: "aksi", orderable: false, searchable: false }
+                    ]
+                });
 
-            $('#kategori_id').on('change', function () {
-                dataBarang.ajax.reload();
+                $('#kategori_id').on('change', function () {
+                    dataBarang.ajax.reload();
+                });
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush

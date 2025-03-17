@@ -331,11 +331,18 @@ class UserController extends Controller
          $user = UserModel::find($id);
 
          if ($user) {
+            try {
             $user->delete();
             return response()->json([
                'status'  => true,
                'message' => 'Data berhasil dihapus'
             ]);
+            } catch (\Throwable $th) {
+               return response()->json([
+                  'status'=> false,
+                  'message'=> 'Data gagal dihapus (terdapat relasi dengan tabel lain)',
+                  ]);
+            }
          } else {
             return response()->json([
                'status'  => false,
@@ -345,5 +352,19 @@ class UserController extends Controller
       }
 
       return redirect('/');
+   }
+
+   public function show_ajax(string $id)
+   {
+      $user = UserModel::with('level')->find($id);
+
+      if (!$user) {
+         return response()->json([
+            'status' => false,
+            'message' => 'Data user tidak ditemukan'
+         ], 404);
+      }
+
+      return view('user.show_ajax', compact('user'));
    }
 }
