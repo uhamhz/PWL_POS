@@ -19,6 +19,12 @@
                     <p>Dashboard</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ url('/profil/'. Auth::user()->user_id) }}" class="nav-link {{ ($activeMenu == 'profil') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-user-alt"></i>
+                    <p>Profil</p>
+                </a>
+            </li>
             <li class="nav-header">Data Pengguna</li>
             <li class="nav-item">
                 <a href="{{ url('/level') }}" class="nav-link {{ ($activeMenu == 'level') ? 'active' : '' }}">
@@ -79,8 +85,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#btnLogout').click(function() {
+    $(document).ready(function () {
+        $('#btnLogout').click(function () {
             Swal.fire({
                 title: "Konfirmasi Logout",
                 text: "Apakah Anda yakin ingin keluar?",
@@ -98,7 +104,7 @@
                         data: {
                             _token: "{{ csrf_token() }}"
                         },
-                        success: function(response) {
+                        success: function (response) {
                             Swal.fire({
                                 title: "Logout Berhasil",
                                 text: "Anda telah keluar.",
@@ -109,7 +115,7 @@
                                 window.location.href = "{{ url('/login') }}";
                             });
                         },
-                        error: function() {
+                        error: function () {
                             Swal.fire({
                                 title: "Logout Gagal",
                                 text: "Terjadi kesalahan, coba lagi!",

@@ -34,6 +34,28 @@ class UserController extends Controller
       ]);
    }
 
+   public function indexProfil()
+   {
+      $breadcrumb = (object) [
+         'title' => 'Data Pribadi',
+         'list'  => ['Home', 'Data Pribadi']
+      ];
+
+      $page = (object) [
+         'title' => 'Daftar user yang terdaftar dalam sistem'
+      ];
+
+      $activeMenu = 'profil'; // set menu yang sedang aktif
+
+      $level = LevelModel::all(); // ambil data level untuk filter level
+
+      return view('profil.index', [
+         'breadcrumb' => $breadcrumb,
+         'page'       => $page,
+         'level'      => $level,
+         'activeMenu' => $activeMenu
+      ]);
+   }
 
    // Ambil data user dalam bentuk json untuk datatables
    // Ambil data user dalam bentuk JSON untuk DataTables
@@ -332,16 +354,16 @@ class UserController extends Controller
 
          if ($user) {
             try {
-            $user->delete();
-            return response()->json([
-               'status'  => true,
-               'message' => 'Data berhasil dihapus'
-            ]);
+               $user->delete();
+               return response()->json([
+                  'status'  => true,
+                  'message' => 'Data berhasil dihapus'
+               ]);
             } catch (\Throwable $th) {
                return response()->json([
-                  'status'=> false,
-                  'message'=> 'Data gagal dihapus (terdapat relasi dengan tabel lain)',
-                  ]);
+                  'status' => false,
+                  'message' => 'Data gagal dihapus (terdapat relasi dengan tabel lain)',
+               ]);
             }
          } else {
             return response()->json([
@@ -366,5 +388,28 @@ class UserController extends Controller
       }
 
       return view('user.show_ajax', compact('user'));
+   }
+
+   public function uploadFoto(Request $request)
+   {
+      $request->validate([
+         'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+      ]);
+
+      $user = auth()->user(); // instance UserModel
+
+      if ($request->hasFile('foto_profil')) {
+         $file = $request->file('foto_profil');
+         $filename = time() . '_' . $file->getClientOriginalName();
+
+         // simpan file
+         $file->move(public_path('uploads/profil'), $filename);
+
+         // update ke database
+         $user->foto_profil = 'uploads/profil/' . $filename;
+         $user->save();
+      }
+
+      return back()->with('success', 'Foto berhasil diupload!');
    }
 }
