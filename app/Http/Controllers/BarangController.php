@@ -418,7 +418,7 @@ class BarangController extends Controller
             ->get();
 
         // load library excel
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif
 
         $sheet->setCellValue('A1', 'No');
