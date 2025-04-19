@@ -19,6 +19,11 @@ class PenjualanModel extends Model
         'penjualan_tanggal',
     ];
 
+    public function detail_penjualan()
+    {
+        return $this->hasMany(DetailPenjualanModel::class, 'penjualan_id', 'penjualan_id');
+    }
+
     // Relasi ke tabel user
     public function user()
     {
