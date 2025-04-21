@@ -28,7 +28,7 @@
                 <div class="info-box bg-gradient-warning shadow">
                     <span class="info-box-icon"><i class="fas fa-cash-register"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Total Penjualan</span>
+                        <span class="info-box-text">Total Transaksi</span>
                         <span class="info-box-number">{{ $totalPenjualan }}</span>
                     </div>
                 </div>
@@ -152,7 +152,7 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-purple text-white">
-                        <h3 class="card-title">5 Penjualan Terbaru</h3>
+                        <h3 class="card-title">5 Transaksi Terbaru</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-purple btn-sm" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -164,20 +164,26 @@
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>
-                                    <th>Kode</th>
                                     <th>Pembeli</th>
+                                    <th>Total Pembelian</th>
+                                    <th>Diinput Oleh</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($penjualanTerbaru as $penjualan)
-                                    <tr>
-                                        <td>{{ $penjualan->penjualan_tanggal }}</td>
-                                        <td>{{ $penjualan->penjualan_id }}</td>
-                                        <td>{{ $penjualan->pembeli }}</td>
-                                    </tr>
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($penjualan->penjualan_tanggal)->format('d-m-Y') }}</td>
+                                                                <td>{{ $penjualan->pembeli }}</td>
+                                                                <td>
+                                                                    Rp{{ number_format($penjualan->detail_penjualan->sum(function ($d) {
+                                        return $d->harga * $d->jumlah;
+                                    }), 0, ',', '.') }}
+                                                                </td>
+                                                                <td>{{ $penjualan->user->nama ?? '-' }}</td>
+                                                            </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted">Belum ada data</td>
+                                        <td colspan="4" class="text-center text-muted">Belum ada data</td>
                                     </tr>
                                 @endforelse
                             </tbody>
