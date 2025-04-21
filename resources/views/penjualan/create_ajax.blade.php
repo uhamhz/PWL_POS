@@ -36,9 +36,6 @@
                         <div class="col-2">
                             <input type="number" name="jumlah[]" class="form-control" placeholder="Jumlah" required>
                         </div>
-                        <div class="col-3">
-                            <input type="number" name="harga[]" class="form-control" placeholder="Harga Per Satuan" required>
-                        </div>
                         <div class="col-2">
                             <button type="button" class="btn btn-danger btn-remove">Hapus</button>
                         </div>

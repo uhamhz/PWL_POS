@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\DetailPenjualanModel;
 use Illuminate\Support\Facades\Storage;
 use App\Models\StokModel;
+use Carbon\Carbon;
 
 class PenjualanController extends Controller
 {
@@ -124,16 +125,17 @@ class PenjualanController extends Controller
             'barang_id.*' => 'required|exists:m_barang,barang_id',
             'jumlah' => 'required|array',
             'jumlah.*' => 'required|integer|min:1',
-            'harga' => 'required|array',
-            'harga.*' => 'required|numeric|min:0'
         ]);
+
+        $tanggalLengkap = Carbon::parse($request->penjualan_tanggal)
+            ->setTimeFromTimeString(now()->format('H:i:s'));
 
         DB::beginTransaction();
         try {
             $penjualan = PenjualanModel::create([
                 'pembeli' => $request->pembeli,
                 'penjualan_kode' => 'PJ' . time(),
-                'penjualan_tanggal' => $request->penjualan_tanggal,
+                'penjualan_tanggal' => $tanggalLengkap,
                 'created_at' => now(),
                 'user_id' => auth()->id(),
             ]);
@@ -192,10 +194,10 @@ class PenjualanController extends Controller
                 DetailPenjualanModel::create([
                     'penjualan_id' => $penjualan->penjualan_id,
                     'barang_id' => $barang_id,
-                    'harga' => $request->harga[$i],
+                    'harga' => $barang->harga_jual, // ambil dari model BarangModel
                     'jumlah' => $request->jumlah[$i],
                     'created_at'  => now(),
-                ]);
+                ]);                
             }
 
             DB::commit();

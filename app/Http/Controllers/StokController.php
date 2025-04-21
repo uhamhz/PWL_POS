@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 
@@ -131,10 +132,8 @@ class StokController extends Controller
                 ]);
             }
 
-            // Gabungkan tanggal dari input dengan jam sekarang (dari server)
-            $tanggalInput = $request->stok_tanggal;
-            $waktuSekarang = date('H:i:s');
-            $tanggalLengkap = $tanggalInput . ' ' . $waktuSekarang;
+            $tanggalLengkap = Carbon::parse($request->stok_tanggal)
+                ->setTimeFromTimeString(now()->format('H:i:s'));
 
             $stok = new StokModel();
             $stok->barang_id    = $request->barang_id;

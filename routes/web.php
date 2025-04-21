@@ -34,7 +34,7 @@ Route::post('register', [AuthController::class, 'postRegister']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
-    Route::get('/profil/{id}', [UserController::class, 'indexProfil']);
+    Route::get('/profil/{id}', [UserController::class, 'indexProfil'])->name('profil.index');
     Route::post('/profil/upload-foto/{id}', [UserController::class, 'uploadFoto'])->name('profil.uploadFoto');
 
     // Routes untuk Level (ADM, MNG)
