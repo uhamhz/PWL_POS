@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register', App\Http\Controllers\Api\RegisterController::class);
+Route::post('/register1', App\Http\Controllers\Api\RegisterController::class);
 Route::post('/login', App\Http\Controllers\Api\LoginController::class);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -57,3 +58,5 @@ Route::post('barang', [BarangController::class, 'store']); // Create a new baran
 Route::get('barang/{barang}', [BarangController::class, 'show']); // Get a specific barang
 Route::put('barang/{barang}', [BarangController::class, 'update']); // Update a barang
 Route::delete('barang/{barang}', [BarangController::class, 'destroy']); // Delete a barang
+Route::post('barang/upload', [BarangController::class, 'uploadImage']); // Upload barang image
+Route::get('barang', [BarangController::class, 'index']); // Get all barang

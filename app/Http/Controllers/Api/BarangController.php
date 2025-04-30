@@ -78,4 +78,39 @@ class BarangController extends Controller
             ], 500);
         }
     }
+
+    public function uploadImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'barang_id' => 'required|exists:m_barang,barang_id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Handle file upload
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/barang', $filename, 'public');
+
+            // Update barang record with image path
+            $barang = BarangModel::find($request->barang_id);
+            $barang->barang_image = $filePath;
+            $barang->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Image uploaded successfully',
+                'data' => $barang,
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No file uploaded',
+        ], 400);
+    }
 }

@@ -6,42 +6,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Validator;
+
 class RegisterController extends Controller
 {
     public function __invoke(Request $request)
     {
-        // Validasi input
+        //set validation
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:255|unique:m_user',
-            'password' => 'required|string|min:8',
-            'nama' => 'required|string|max:255',
-            'level_id' => 'required|integer|exists:m_level,level_id',
+            'username' => 'required',
+            'nama' => 'required',
+            'password' => 'required|min:5',
+            'level_id' => 'required',
+            'image' => 'required'
         ]);
-
+        //if validations fails
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors(),
-            ], 422);
+            return response()->json($validator->errors(), 422);
         }
-
-        // Buat user baru
+        //create user
         $user = UserModel::create([
             'username' => $request->username,
-            'password' => bcrypt($request->password),
             'nama' => $request->nama,
+            'password' => bcrypt($request->password),
             'level_id' => $request->level_id,
+            'image' => $request->image
         ]);
+        //return response JSON user is created
         if ($user) {
             return response()->json([
-                'status' => true,
-                'message' => 'User created successfully',
-                'data' => $user,
+                'success' => true,
+                'user' => $user,
             ], 201);
         }
+        //return JSON process insert failed 
         return response()->json([
-            'status' => false,
-            'message' => 'Failed to create user',
+            'success' => false,
         ], 409);
     }
 }
